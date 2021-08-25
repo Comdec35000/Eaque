@@ -12,6 +12,7 @@
  * Toutes les informations pour bien débuter sont dans le README.
  *
  * AUTHOR : Com (Comdec35000)
+ * VERSION : 1.0.0 2021/08/25
  * -----------------------------------------------------------------------------
 */
 
