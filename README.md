@@ -3,7 +3,7 @@
 
 ## *Introduction :*
 Eaque est un parser libre pour les commandes de bots discord.
-Il tire son nom du juge des enfers Eaque de la mythologie greque.
+Il tire son nom d'un des juges des Enfers de la mythologie greque.
 Son utilisation est libre, et sa modification est permise, cependant merci de me créditer dans ce cas. Son intérêt est de simplifier la création de commandes pour les bots discord en automatisant la récupération d'argument sous forme de tokens. Pour cela il suffit d'ajouter ce document dans votre projet npm et de le require pour accéder à ses méthodes static ainsi qu'au classes qu'il propose.
 
 ## *Quickstart*
