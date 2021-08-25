@@ -1,0 +1,333 @@
+/* -----------------------------------------------------------------------------
+ * Eaque est un parser pour les commandes de bots discord.
+ *
+ * Il tire son nom du juge des enfers Eaque de la mythologie greque.
+ * Son utilisation est libre, et sa modification est permise, cependant merci de
+ * me créditer dans ce cas.
+ * Son intérêt est de simplifier la création de commandes pour les bots discord
+ * en automatisant la récupération d'argument sous forme de tokens. Pour cela il
+ * suffit d'ajouter ce document dans votre projet npm et de le require pour
+ * accéder à ses méthodes static ainsi qu'au classes qu'il propose.
+ *
+ * Toutes les informations pour bien débuter sont dans le README.
+ *
+ * AUTHOR : Com (Comdec35000)
+ * -----------------------------------------------------------------------------
+*/
+
+class Eaque {
+
+  static tokenType = {
+    KEYWORD : "KEYWORD_TOKEN",
+    END : "END_TOKEN",
+    OPT_ARG_START : "OPT_ARG_START_TOKEN",
+    NUMBER : "NUMBER_TOKEN",
+    STRING : "STRING_TOKEN",
+    BOOL : "BOOL_TOKEN",
+    TIME : "TIME_TOKEN",
+    COLOR : "COLOR_TOKEN",
+    USER : "USER_TOKEN",
+    CHANNEL : "CHANNEL_TOKEN",
+    ROLE : "ROLE_TOKEN"
+  }
+
+  static DIGITS = "0123456789";
+
+  static TIMES = {
+    s : 1,
+    m : 60,
+    h : 3600,
+    d : 86400,
+    M : 2592000,
+    Y : 31536000
+  }
+
+  static readCommand(args, command, client, guild) {
+    let lexer = new Lexer(args, command, client, guild);
+    var tokens = lexer.makeTokens();
+    let parser = new Parser(tokens, command);
+    var ctx = parser.parseTokens();
+
+    return ctx;
+  }
+
+}
+
+// #############################################################################
+
+class Token {
+
+  constructor(type, value) {
+    this.type = type;
+    this.value = value;
+  }
+
+  matches(token) {
+    return token.type === this.type && token.value === this.value;
+  }
+
+}
+
+
+
+class Position {
+
+  constructor(idx) {
+    this.index = idx;
+  }
+
+  advance() {
+    this.index++;
+    return this;
+  }
+
+  copy() {
+    return Object.assign(new Position(), ...this);
+  }
+
+}
+
+
+
+class Lexer {
+
+  constructor(text, command, client, guild) {
+    this.text = text;
+    this.command = command;
+    this.client = client;
+    this.guild = guild;
+    this.pos = new Position(-1);
+    this.currentChar;
+    this.advance();
+  }
+
+
+  advance() {
+    this.pos.advance();
+    this.currentChar = this.text.charAt(this.pos.index);
+  }
+
+
+  makeTokens() {
+    let tokens = [];
+
+    while(this.currentChar) {
+
+      if(this.currentChar === '\t' || this.currentChar === ' ') {
+        this.advance();
+
+      } else if(this.currentChar === '-') {
+        this.advance();
+        if(this.currentChar === ' ') {
+          if(tokens[tokens.length - 1].type === Eaque.tokenType.STRING) {
+            tokens[tokens.length - 1].value += ' -';
+          } else {
+            tokens.push(new Token(Eaque.tokenType.STRING, '-'));
+          }
+        } else {
+          tokens.push(new Token(Eaque.tokenType.OPT_ARG_START, this.makeWord()));
+        }
+
+      } else if(this.currentChar == '#') {
+        this.advance();
+        tokens.push(new Token(Eaque.tokenType.COLOR, this.makeWord()));
+
+      } else if(Eaque.DIGITS.includes(this.currentChar)) {
+        let num = this.makeNumber();
+        if(num) {
+          if(tokens[tokens.length - 1] && tokens[tokens.length - 1].type === Eaque.tokenType.STRING && num.type === Eaque.tokenType.NUMBER) {
+            tokens[tokens.length - 1].value += ' ' + num.value;
+          } else {
+            tokens.push(num);
+          }
+        } else {
+          this.advance();
+        }
+
+      } else {
+        let word = this.makeWord();
+
+        if(word.startsWith("<")) {
+          word = word.replace('<', '').replace('>', '').replace('!', '')
+
+          console.log(word);
+
+          if(word.startsWith("@")) tokens.push(Eaque.tokenType.USER, this.makeUser(word.replace('@', '')))
+          if(word.startsWith("#")) tokens.push(Eaque.tokenType.CHANNEL, this.makeChannel(word.replace('#', '')))
+          if(word.startsWith("@&")) tokens.push(Eaque.tokenType.ROLE, this.makeRole(word.replace('@&', '')))
+
+        } else if (word.includes("#") && this.client.users.cache.find(u => u.tag == word)) {
+          tokens.push(Eaque.tokenType.USER, this.client.users.cache.find(u => u.tag == word));
+        } else if(word.toLowerCase() === "true" || word.toLowerCase() === "false") {
+
+          word = word.toLowerCase();
+          tokens.push(new Token(Eaque.tokenType.BOOL, word === "true"));
+
+        } else {
+
+          if(tokens[tokens.length - 1] && tokens[tokens.length - 1].type === Eaque.tokenType.STRING) {
+            tokens[tokens.length - 1].value += ' ' + word
+          } else {
+            if(this.command.keywords.includes(word)) {
+              tokens.push(new Token(Eaque.tokenType.KEYWORD, word));
+            } else {
+              tokens.push(new Token(Eaque.tokenType.STRING, word));
+            }
+          }
+
+        }
+
+      }
+
+
+
+    }
+
+    tokens.push(new Token(Eaque.tokenType.END))
+    return tokens;
+  }
+
+
+  makeWord() {
+    let str = '';
+
+    while (this.currentChar && this.currentChar != ' ') {
+      str += this.currentChar;
+      this.advance();
+    }
+
+    return str;
+  }
+
+
+  makeNumber() {
+    let num = '';
+    let tokenType;
+    let timeMultiplier;
+
+    while(this.currentChar && (Eaque.DIGITS + Object.keys(Eaque.TIMES) + '.').includes(this.currentChar)) {
+      if(Object.keys(Eaque.TIMES).includes(this.currentChar)) {
+        tokenType = 'time';
+        timeMultiplier = Eaque.TIMES[this.currentChar];
+      } else {
+        num += this.currentChar;
+      }
+      this.advance()
+    }
+
+    if(num.length > 15) {
+      let tryUser = this.makeUser(num)
+      if(tryUser) return new Token(Eaque.tokenType.USER, tryUser);
+
+      let tryChannel = this.makeChannel(num)
+      if(tryChannel) return new Token(Eaque.tokenType.CHANNEL, tryChannel);
+
+      let tryRole = this.makeRole(num)
+      if(tryRole) return new Token(Eaque.tokenType.ROLE, tryRole);
+    }
+
+    if(tokenType == 'time') return new Token(Eaque.tokenType.TIME, num*timeMultiplier);
+
+    return new Token(Eaque.tokenType.NUMBER, num);
+  }
+
+
+  makeUser(id) {
+    return this.client.users.cache.get(id)
+  }
+
+  makeChannel(id) {
+    return this.guild.channels.cache.get(id)
+  }
+
+  makeRole(id) {
+    return this.guild.roles.cache.get(id)
+  }
+
+}
+
+
+class Parser {
+
+  constructor(tokens, command) {
+    this.tokens = tokens;
+    this.command = command;
+    this.ctx = new CommandContext();
+  }
+
+  parseTokens() {
+    this.getKeywords();
+    this.getOptArgs();
+    this.getTokens();
+
+    return this.ctx;
+  }
+
+  getKeywords() {
+    this.tokens.forEach(token => {
+      if(token.type === Eaque.tokenType.KEYWORD) this.ctx.keywords.push(token);
+    });
+  }
+
+  getOptArgs() {
+
+    let index = -1;
+    while(index < this.tokens.length) {
+      index ++;
+      if(this.tokens[index] && this.tokens[index].type === Eaque.tokenType.OPT_ARG_START) {
+        var optArg = [];
+        var key = this.tokens[index].value;
+        if(!this.command.optArgs.includes(key)) throw new Error('Eaque.ParseException.InvalidOptionalArgument : ' + key);
+
+        while(this.tokens[index + 1] && (!(this.tokens[index + 1].type === Eaque.tokenType.OPT_ARG_START || this.tokens[index + 1].type === Eaque.tokenType.END))) {
+          index ++;
+          optArg.push(this.tokens[index]);
+        }
+
+        this.ctx.optArgs[key] = optArg;
+      }
+    }
+  }
+
+  getTokens() {
+    let tokens = [];
+    let stop = false;
+
+    this.tokens.forEach(token => {
+      if(token.type === Eaque.tokenType.OPT_ARG_START) {
+        stop = true
+      }
+      if(!stop) tokens.push(token);
+    });
+
+    this.ctx.tokens = tokens
+
+  }
+
+}
+
+class ParseCommand {
+
+  constructor(keywords, optArgs) {
+    this.keywords = keywords;
+    this.optArgs = optArgs;
+  }
+
+}
+
+
+
+class CommandContext {
+
+  constructor() {
+    this.keywords = [];
+    this.optArgs = {};
+    this.tokens = []
+  }
+
+}
+
+
+module.exports.CommandContext = CommandContext;
+module.exports.ParseCommand = ParseCommand;
+module.exports = Eaque;
