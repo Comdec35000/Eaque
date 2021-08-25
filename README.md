@@ -68,13 +68,13 @@ Le module Eaque propose trois classe : `Eaque`, `ParseCommand` et `CommandContex
 La classe Eaque propose surtout des attributs et des méthodes *static* :
  **Attributs :** 
  
- -[Static] tokenType : L'ensemble des types de tokens du Lexer d'Eaque
- -[Static] DIGITS : l'ensemble des chiffres
- -[Static] TIMES : l'ensemble des unitées de temps de durés utilisés par Eaque avec en valeurs leur équivalent en secondes
+ - [Static] tokenType : L'ensemble des types de tokens du Lexer d'Eaque
+ - [Static] DIGITS : l'ensemble des chiffres
+ - [Static] TIMES : l'ensemble des unitées de temps de durés utilisés par Eaque avec en valeurs leur équivalent en secondes
 
  **Méthodes :**
  
- -[Static] readCommand: 
+ - [Static] readCommand: 
  arguments : String arguments (la chaine de caractère à parse), ParseCommand command (votre commande), Client client (votre bot), Guild guild (le serveur où la commande a été utilisée).
  return : CommandContext
 
@@ -82,10 +82,11 @@ La classe Eaque propose surtout des attributs et des méthodes *static* :
 
 **`ParseCommand`** :
 La classe `ParseCommand` est la classe servant à créer vos commandes, soit en l'instanciant, soit en créant une classe qui en hérite.
+
  **Constructeur :** 
  
- -keywords : L'ensemble des mots clés qui pourront être utilisés dans votre commande
- -optArgs : l'ensemble des arguments optionel utilisables dans votre commande (si un argument optionel qui n'est pas dans cette liste est utilisé cela renverra une erreur)
+ - keywords : L'ensemble des mots clés qui pourront être utilisés dans votre commande
+ - optArgs : l'ensemble des arguments optionel utilisables dans votre commande (si un argument optionel qui n'est pas dans cette liste est utilisé cela renverra une erreur)
 
 
 
@@ -94,9 +95,9 @@ La classe `CommandContext` est la classe de l'objet renvoyé par la méthode `Ea
 
  **Attributs :** 
  
- -keywords : L'ensemble des mots clés qui ont été utilisés dans la commande, dans l'ordre de leur utilisation
- -optArgs : Un objet contenant en clé les arguments optionels utilisés dans la commande, et en valeur un `Array` contenant tout les tokens que l'utilisateur a mit par la suite.
- -tokens : L'ensemble des tokens de la commande sauf ceux liés aux arguments optionels, dans l'ordre.
+ - keywords : L'ensemble des mots clés qui ont été utilisés dans la commande, dans l'ordre de leur utilisation
+ - optArgs : Un objet contenant en clé les arguments optionels utilisés dans la commande, et en valeur un `Array` contenant tout les tokens que l'utilisateur a mit par la suite.
+ - tokens : L'ensemble des tokens de la commande sauf ceux liés aux arguments optionels, dans l'ordre.
 
 
 
@@ -117,5 +118,5 @@ Les `Token` sont les objets utilisés par Eaque pour représenter un argument de
 
  **Attributs :** 
  
- -type : Le type de token (voir ci dessus)
- -value : La valeur du token
+ - type : Le type de token (voir ci dessus)
+ - value : La valeur du token
