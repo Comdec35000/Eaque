@@ -12,7 +12,7 @@
  * Toutes les informations pour bien débuter sont dans le README.
  *
  * AUTHOR : Com (Comdec35000)
- * VERSION : 1.0.0 2021/08/25
+ * VERSION : 1.0.1 2021/10/23
  * -----------------------------------------------------------------------------
 */
 
@@ -42,6 +42,10 @@ class Eaque {
     M : 2592000,
     Y : 31536000
   }
+
+  static ParseCommand = ParseCommand;
+  static Token = Token;
+  static CommandContext = CommandContext;
 
   static readCommand(args, command, client, guild) {
     let lexer = new Lexer(args, command, client, guild);
@@ -329,6 +333,4 @@ class CommandContext {
 }
 
 
-module.exports.CommandContext = CommandContext;
-module.exports.ParseCommand = ParseCommand;
 module.exports = Eaque;
