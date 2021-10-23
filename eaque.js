@@ -16,6 +16,41 @@
  * -----------------------------------------------------------------------------
 */
 
+class ParseCommand {
+
+  constructor(keywords, optArgs) {
+    this.keywords = keywords;
+    this.optArgs = optArgs;
+  }
+
+}
+
+
+
+class CommandContext {
+
+  constructor() {
+    this.keywords = [];
+    this.optArgs = {};
+    this.tokens = []
+  }
+
+}
+
+class Token {
+
+  constructor(type, value) {
+    this.type = type;
+    this.value = value;
+  }
+
+  matches(token) {
+    return token.type === this.type && token.value === this.value;
+  }
+
+}
+
+
 class Eaque {
 
   static tokenType = {
@@ -54,21 +89,6 @@ class Eaque {
     var ctx = parser.parseTokens();
 
     return ctx;
-  }
-
-}
-
-
-
-class Token {
-
-  constructor(type, value) {
-    this.type = type;
-    this.value = value;
-  }
-
-  matches(token) {
-    return token.type === this.type && token.value === this.value;
   }
 
 }
@@ -307,27 +327,6 @@ class Parser {
 
     this.ctx.tokens = tokens
 
-  }
-
-}
-
-class ParseCommand {
-
-  constructor(keywords, optArgs) {
-    this.keywords = keywords;
-    this.optArgs = optArgs;
-  }
-
-}
-
-
-
-class CommandContext {
-
-  constructor() {
-    this.keywords = [];
-    this.optArgs = {};
-    this.tokens = []
   }
 
 }
