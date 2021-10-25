@@ -12,7 +12,7 @@
  * Toutes les informations pour bien débuter sont dans le README.
  *
  * AUTHOR : Com (Comdec35000)
- * VERSION : 1.0.1 2021/10/23
+ * VERSION : 1.1.0 2021/10/25
  * -----------------------------------------------------------------------------
 */
 
@@ -170,37 +170,9 @@ class Lexer {
         }
 
       } else {
+
         let word = this.makeWord();
-
-        if(word.startsWith("<")) {
-          word = word.replace('<', '').replace('>', '').replace('!', '')
-
-          console.log(word);
-
-          if(word.startsWith("@")) tokens.push(Eaque.tokenType.USER, this.makeUser(word.replace('@', '')))
-          if(word.startsWith("#")) tokens.push(Eaque.tokenType.CHANNEL, this.makeChannel(word.replace('#', '')))
-          if(word.startsWith("@&")) tokens.push(Eaque.tokenType.ROLE, this.makeRole(word.replace('@&', '')))
-
-        } else if (word.includes("#") && this.client.users.cache.find(u => u.tag == word)) {
-          tokens.push(Eaque.tokenType.USER, this.client.users.cache.find(u => u.tag == word));
-        } else if(word.toLowerCase() === "true" || word.toLowerCase() === "false") {
-
-          word = word.toLowerCase();
-          tokens.push(new Token(Eaque.tokenType.BOOL, word === "true"));
-
-        } else {
-
-          if(tokens[tokens.length - 1] && tokens[tokens.length - 1].type === Eaque.tokenType.STRING) {
-            tokens[tokens.length - 1].value += ' ' + word
-          } else {
-            if(this.command.keywords.includes(word)) {
-              tokens.push(new Token(Eaque.tokenType.KEYWORD, word));
-            } else {
-              tokens.push(new Token(Eaque.tokenType.STRING, word));
-            }
-          }
-
-        }
+        this.createComplexToken(word, tokens);
 
       }
 
@@ -210,6 +182,48 @@ class Lexer {
 
     tokens.push(new Token(Eaque.tokenType.END))
     return tokens;
+  }
+
+  createComplexToken(word, tokens) {
+
+    if(word.startsWith("<")) {
+      var testWord = '' + word;
+      testWord = testWord.replace('<', '').replace('>', '').replace('!', '');
+
+      console.log(testWord);
+      console.log(word);
+      console.log('aaa');
+      console.log(testWord.startsWith('@') || testWord.startsWith('#'));
+
+      if(testWord.startsWith('@') || testWord.startsWith('#')) {
+        if(testWord.startsWith("@&")) return tokens.push(new Token(Eaque.tokenType.ROLE, this.makeRole(testWord.replace('@&', ''))));
+        if(testWord.startsWith("@")) return tokens.push(new Token(Eaque.tokenType.USER, this.makeUser(testWord.replace('@', ''))));
+        if(testWord.startsWith("#")) return tokens.push(new Token(Eaque.tokenType.CHANNEL, this.makeChannel(testWord.replace('#', ''))));
+      }
+        
+    }
+    
+    if (word.includes("#") && this.client.users.cache.find(u => u.tag == word)) {
+
+      tokens.push(new Token(Eaque.tokenType.USER, this.client.users.cache.find(u => u.tag == word)));
+      return;
+    }
+
+    if(word.toLowerCase() === "true" || word.toLowerCase() === "false") {
+      word = word.toLowerCase();
+      tokens.push(new Token(Eaque.tokenType.BOOL, word === "true"));
+      return;
+    }
+
+    if(tokens[tokens.length - 1] && tokens[tokens.length - 1].type === Eaque.tokenType.STRING) {
+      tokens[tokens.length - 1].value += ' ' + word
+    } else {
+      if(this.command.keywords.includes(word)) {
+        tokens.push(new Token(Eaque.tokenType.KEYWORD, word));
+      } else {
+        tokens.push(new Token(Eaque.tokenType.STRING, word));
+      }
+    }
   }
 
 
