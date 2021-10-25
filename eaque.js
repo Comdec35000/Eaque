@@ -12,7 +12,7 @@
  * Toutes les informations pour bien débuter sont dans le README.
  *
  * AUTHOR : Com (Comdec35000)
- * VERSION : 1.1.0 2021/10/25
+ * VERSION : 1.1.1 2021/10/25
  * -----------------------------------------------------------------------------
 */
 
@@ -81,6 +81,15 @@ class Eaque {
   static ParseCommand = ParseCommand;
   static Token = Token;
   static CommandContext = CommandContext;
+
+  /**
+   * 
+   * @param {String} args All the comand arguments unless the prefix and the command name
+   * @param {ParseCommand} command An object that inherits ParseCommand to store the possible keywords and optional arguments
+   * @param {Discord.Client} client The Client that reads the command
+   * @param {Discord.Guild} guild The Guild where the command was posted
+   * @returns {CommandContext} All the info in the Command
+   */
 
   static readCommand(args, command, client, guild) {
     let lexer = new Lexer(args, command, client, guild);
