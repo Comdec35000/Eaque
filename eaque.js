@@ -12,7 +12,7 @@
  * Toutes les informations pour bien débuter sont dans le README.
  *
  * AUTHOR : Com (Comdec35000)
- * VERSION : 1.1.1 2021/10/25
+ * VERSION : 1.2.0 2021/10/27
  * -----------------------------------------------------------------------------
 */
 
@@ -61,6 +61,7 @@ class Eaque {
     STRING : "STRING_TOKEN",
     BOOL : "BOOL_TOKEN",
     TIME : "TIME_TOKEN",
+    DATE : "DATE_TOKEN",
     COLOR : "COLOR_TOKEN",
     USER : "USER_TOKEN",
     CHANNEL : "CHANNEL_TOKEN",
@@ -253,10 +254,13 @@ class Lexer {
     let tokenType;
     let timeMultiplier;
 
-    while(this.currentChar && (Eaque.DIGITS + Object.keys(Eaque.TIMES) + '.').includes(this.currentChar)) {
+    while(this.currentChar && (Eaque.DIGITS + Object.keys(Eaque.TIMES) + './').includes(this.currentChar)) {
       if(Object.keys(Eaque.TIMES).includes(this.currentChar)) {
         tokenType = 'time';
         timeMultiplier = Eaque.TIMES[this.currentChar];
+      } else if(this.currentChar === '/') {
+        tokenType = 'date';
+        num += this.currentChar;
       } else {
         num += this.currentChar;
       }
@@ -275,6 +279,24 @@ class Lexer {
     }
 
     if(tokenType == 'time') return new Token(Eaque.tokenType.TIME, num*timeMultiplier);
+    if(tokenType == 'date') {
+
+      var copyNum = '' + num;
+      copyNum = copyNum.split('/');
+      var day;
+      var month;
+      var year;
+
+      if((copyNum.length == 2 || copyNum.length == 3) && (copyNum[0].length > 2 && copyNum[1].length > 2 && copyNum[2].length > 4)) {
+        day = copyNum[0];
+        month = copyNum[1];
+        year = copyNum[2] ?? new Date().getFullYear();
+        day++;
+      }
+
+      if(day && month && year) return new Token(Eaque.tokenType.DATE, new Date(year, month-1, day));
+
+    }
 
     return new Token(Eaque.tokenType.NUMBER, num);
   }
