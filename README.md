@@ -110,6 +110,7 @@ Les `Token` sont les objets utilisés par Eaque pour représenter un argument de
 + `STRING` : une chaîne de caractère
 + `BOOL` : un boolean
 + `TIME` : une durée (en secondes)
++ `DATE` : un Objet Date
 + `COLOR` : une couleur hexadécimale
 + `USER` : un [User](https://discord.js.org/#/docs/main/stable/class/User)
 + `ROLE` : un [Role](https://discord.js.org/#/docs/main/stable/class/Role)
