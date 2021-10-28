@@ -200,11 +200,6 @@ class Lexer {
       var testWord = '' + word;
       testWord = testWord.replace('<', '').replace('>', '').replace('!', '');
 
-      console.log(testWord);
-      console.log(word);
-      console.log('aaa');
-      console.log(testWord.startsWith('@') || testWord.startsWith('#'));
-
       if(testWord.startsWith('@') || testWord.startsWith('#')) {
         if(testWord.startsWith("@&")) return tokens.push(new Token(Eaque.tokenType.ROLE, this.makeRole(testWord.replace('@&', ''))));
         if(testWord.startsWith("@")) return tokens.push(new Token(Eaque.tokenType.USER, this.makeUser(testWord.replace('@', ''))));
