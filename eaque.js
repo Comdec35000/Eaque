@@ -12,7 +12,7 @@
  * Toutes les informations pour bien débuter sont dans le README.
  *
  * AUTHOR : Com (Comdec35000)
- * VERSION : 1.2.0 2021/10/27
+ * VERSION : 1.2.1 2021/10/27
  * -----------------------------------------------------------------------------
 */
 
@@ -285,7 +285,7 @@ class Lexer {
       if((copyNum.length == 2 || copyNum.length == 3) && (copyNum[0].length > 2 && copyNum[1].length > 2 && copyNum[2].length > 4)) {
         day = copyNum[0];
         month = copyNum[1];
-        year = copyNum[2] ?? new Date().getFullYear();
+        year = copyNum[2] || new Date().getFullYear();
         day++;
       }
 
