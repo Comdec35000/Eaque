@@ -12,7 +12,7 @@
  * Toutes les informations pour bien débuter sont dans le README.
  *
  * AUTHOR : Com (Comdec35000)
- * VERSION : 1.2.1 2021/10/27
+ * VERSION : 1.2.1 2021/11/13
  * -----------------------------------------------------------------------------
 */
 
@@ -342,7 +342,6 @@ class Parser {
       if(this.tokens[index] && this.tokens[index].type === Eaque.tokenType.OPT_ARG_START) {
         var optArg = [];
         var key = this.tokens[index].value;
-        if(!this.command.optArgs.includes(key)) throw new Error('Eaque.ParseException.InvalidOptionalArgument : ' + key);
 
         while(this.tokens[index + 1] && (!(this.tokens[index + 1].type === Eaque.tokenType.OPT_ARG_START || this.tokens[index + 1].type === Eaque.tokenType.END))) {
           index ++;
