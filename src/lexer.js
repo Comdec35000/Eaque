@@ -189,4 +189,4 @@ class Lexer {
   
 }
 
-module.export = Lexer;
+module.exports = Lexer;
