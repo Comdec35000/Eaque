@@ -1,14 +1,14 @@
-const Eaque = require('./eaque.js');
 const Position = require('./class/position');
 const Token = require('./class/token.js');
 
 class Lexer {
 
-    constructor(text, command, client, guild) {
+    constructor(text, command, client, guild, instance) {
       this.text = text;
       this.command = command;
       this.client = client;
       this.guild = guild;
+      this.eaqueInstance = instance;
       this.pos = new Position(-1);
       this.currentChar;
       this.advance();
@@ -32,23 +32,23 @@ class Lexer {
         } else if(this.currentChar === '-') {
           this.advance();
           if(this.currentChar === ' ') {
-            if(tokens[tokens.length - 1].type === Eaque.tokenType.STRING) {
+            if(tokens[tokens.length - 1].type === this.eaqueInstance.tokenType.STRING) {
               tokens[tokens.length - 1].value += ' -';
             } else {
-              tokens.push(new Token(Eaque.tokenType.STRING, '-'));
+              tokens.push(new Token(this.eaqueInstance.tokenType.STRING, '-'));
             }
           } else {
-            tokens.push(new Token(Eaque.tokenType.OPT_ARG_START, this.makeWord()));
+            tokens.push(new Token(this.eaqueInstance.tokenType.OPT_ARG_START, this.makeWord()));
           }
   
         } else if(this.currentChar == '#') {
           this.advance();
-          tokens.push(new Token(Eaque.tokenType.COLOR, this.makeWord()));
+          tokens.push(new Token(this.eaqueInstance.tokenType.COLOR, this.makeWord()));
   
-        } else if(Eaque.DIGITS.includes(this.currentChar)) {
+        } else if(this.eaqueInstance.DIGITS.includes(this.currentChar)) {
           let num = this.makeNumber();
           if(num) {
-            if(tokens[tokens.length - 1] && tokens[tokens.length - 1].type === Eaque.tokenType.STRING && num.type === Eaque.tokenType.NUMBER) {
+            if(tokens[tokens.length - 1] && tokens[tokens.length - 1].type === this.eaqueInstance.tokenType.STRING && num.type === this.eaqueInstance.tokenType.NUMBER) {
               tokens[tokens.length - 1].value += ' ' + num.value;
             } else {
               tokens.push(num);
@@ -68,7 +68,7 @@ class Lexer {
   
       }
   
-      tokens.push(new Token(Eaque.tokenType.END))
+      tokens.push(new Token(this.eaqueInstance.tokenType.END))
       return tokens;
     }
   
@@ -79,32 +79,32 @@ class Lexer {
         testWord = testWord.replace('<', '').replace('>', '').replace('!', '');
   
         if(testWord.startsWith('@') || testWord.startsWith('#')) {
-          if(testWord.startsWith("@&")) return tokens.push(new Token(Eaque.tokenType.ROLE, this.makeRole(testWord.replace('@&', ''))));
-          if(testWord.startsWith("@")) return tokens.push(new Token(Eaque.tokenType.USER, this.makeUser(testWord.replace('@', ''))));
-          if(testWord.startsWith("#")) return tokens.push(new Token(Eaque.tokenType.CHANNEL, this.makeChannel(testWord.replace('#', ''))));
+          if(testWord.startsWith("@&")) return tokens.push(new Token(this.eaqueInstance.tokenType.ROLE, this.makeRole(testWord.replace('@&', ''))));
+          if(testWord.startsWith("@")) return tokens.push(new Token(this.eaqueInstance.tokenType.USER, this.makeUser(testWord.replace('@', ''))));
+          if(testWord.startsWith("#")) return tokens.push(new Token(this.eaqueInstance.tokenType.CHANNEL, this.makeChannel(testWord.replace('#', ''))));
         }
           
       }
       
       if (word.includes("#") && this.client.users.cache.find(u => u.tag == word)) {
   
-        tokens.push(new Token(Eaque.tokenType.USER, this.client.users.cache.find(u => u.tag == word)));
+        tokens.push(new Token(this.eaqueInstance.tokenType.USER, this.client.users.cache.find(u => u.tag == word)));
         return;
       }
   
       if(word.toLowerCase() === "true" || word.toLowerCase() === "false") {
         word = word.toLowerCase();
-        tokens.push(new Token(Eaque.tokenType.BOOL, word === "true"));
+        tokens.push(new Token(this.eaqueInstance.tokenType.BOOL, word === "true"));
         return;
       }
   
-      if(tokens[tokens.length - 1] && tokens[tokens.length - 1].type === Eaque.tokenType.STRING) {
+      if(tokens[tokens.length - 1] && tokens[tokens.length - 1].type === this.eaqueInstance.tokenType.STRING) {
         tokens[tokens.length - 1].value += ' ' + word
       } else {
         if(this.command.keywords.includes(word)) {
-          tokens.push(new Token(Eaque.tokenType.KEYWORD, word));
+          tokens.push(new Token(this.eaqueInstance.tokenType.KEYWORD, word));
         } else {
-          tokens.push(new Token(Eaque.tokenType.STRING, word));
+          tokens.push(new Token(this.eaqueInstance.tokenType.STRING, word));
         }
       }
     }
@@ -127,10 +127,10 @@ class Lexer {
       let tokenType;
       let timeMultiplier;
   
-      while(this.currentChar && (Eaque.DIGITS + Object.keys(Eaque.TIMES) + './').includes(this.currentChar)) {
-        if(Object.keys(Eaque.TIMES).includes(this.currentChar)) {
+      while(this.currentChar && (this.eaqueInstance.DIGITS + Object.keys(this.eaqueInstance.TIMES) + './').includes(this.currentChar)) {
+        if(Object.keys(this.eaqueInstance.TIMES).includes(this.currentChar)) {
           tokenType = 'time';
-          timeMultiplier = Eaque.TIMES[this.currentChar];
+          timeMultiplier = this.eaqueInstance.TIMES[this.currentChar];
         } else if(this.currentChar === '/') {
           tokenType = 'date';
           num += this.currentChar;
@@ -142,16 +142,16 @@ class Lexer {
   
       if(num.length > 15) {
         let tryUser = this.makeUser(num)
-        if(tryUser) return new Token(Eaque.tokenType.USER, tryUser);
+        if(tryUser) return new Token(this.eaqueInstance.tokenType.USER, tryUser);
   
         let tryChannel = this.makeChannel(num)
-        if(tryChannel) return new Token(Eaque.tokenType.CHANNEL, tryChannel);
+        if(tryChannel) return new Token(this.eaqueInstance.tokenType.CHANNEL, tryChannel);
   
         let tryRole = this.makeRole(num)
-        if(tryRole) return new Token(Eaque.tokenType.ROLE, tryRole);
+        if(tryRole) return new Token(this.eaqueInstance.tokenType.ROLE, tryRole);
       }
   
-      if(tokenType == 'time') return new Token(Eaque.tokenType.TIME, num*timeMultiplier);
+      if(tokenType == 'time') return new Token(this.eaqueInstance.tokenType.TIME, num*timeMultiplier);
       if(tokenType == 'date') {
   
         var copyNum = '' + num;
@@ -167,11 +167,11 @@ class Lexer {
           day++;
         }
   
-        if(day && month && year) return new Token(Eaque.tokenType.DATE, new Date(year, month-1, day));
+        if(day && month && year) return new Token(this.eaqueInstance.tokenType.DATE, new Date(year, month-1, day));
   
       }
   
-      return new Token(Eaque.tokenType.NUMBER, num);
+      return new Token(this.eaqueInstance.tokenType.NUMBER, num);
     }
   
   

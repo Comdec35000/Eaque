@@ -41,9 +41,9 @@ class Eaque {
      */
   
     static readCommand(args, command, client, guild) {
-      let lexer = new Lexer(args, command, client, guild);
+      let lexer = new Lexer(args, command, client, guild, this);
       var tokens = lexer.makeTokens();
-      let parser = new Parser(tokens, command);
+      let parser = new Parser(tokens, command, this);
       var ctx = parser.parseTokens();
   
       return ctx;
