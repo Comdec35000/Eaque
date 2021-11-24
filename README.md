@@ -8,9 +8,12 @@ Son utilisation est libre, et sa modification est permise, cependant merci de me
 
 ## *Quickstart*
 
-Avant toute chose, Eaque **n'est pas** un package npm, juste un module node que vous pouvez à vos projets de bots discord et le require à partir de son chemin de fichier.
+Installez Eaque avec 
+```sh
+npm install eaque
+```
 ```js
-var Eaque = require('<path_to_file>/eaque.js');
+var Eaque = require('eaque');
 ```
 Il faut ensuite créer une classe pour chacune de vos qui hérite de la classe `ParseCommand` de Eaque, ou instancier cette classe pour chacune de vos commandes, afin que les bons arguments puissent être trouvés dedans.
 ```js
