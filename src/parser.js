@@ -1,4 +1,4 @@
-const Eaque = require('../index.js');
+const Eaque = require('./eaque.js');
 const CommandContext = require("./class/command_context");
 
 
