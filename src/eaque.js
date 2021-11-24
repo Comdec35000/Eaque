@@ -1,7 +1,7 @@
-const CommandContext = require('./src/class/command_context');
-const ParseCommand = require('./src/class/parse_command');
-const Lexer = require('./src/lexer.js');
-const Parser = require('./src/parser.js')
+const CommandContext = require('./class/command_context');
+const ParseCommand = require('./class/parse_command');
+const Lexer = require('./lexer.js');
+const Parser = require('./parser.js')
 
 class Eaque {
 
