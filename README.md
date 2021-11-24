@@ -12,6 +12,7 @@ Installez Eaque avec
 ```sh
 npm install eaque
 ```
+Ensuite importez le module avec pour accéder à ses méthodes et ses classes.
 ```js
 var Eaque = require('eaque');
 ```
