@@ -1,5 +1,6 @@
 # Eaque
 
+<img src='./assets/logo_white.svg'>
 
 ## *Introduction :*
 Eaque est un parser libre pour les commandes de bots discord.
