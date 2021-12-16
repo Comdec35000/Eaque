@@ -2,10 +2,12 @@
 
 <img src='https://github.com/Comdec35000/Eaque/blob/main/assets/logo_white.svg'>
 
+**OUTATED**
+
 ## *Introduction :*
 Eaque est un parser libre pour les commandes de bots discord.
 Il tire son nom de l'un des juges des Enfers de la mythologie greque.
-Son utilisation est libre, et sa modification est permise, cependant merci de me créditer dans ce cas. Son intérêt est de simplifier la création de commandes pour les bots discord en automatisant la récupération d'argument sous forme de tokens. Pour cela il suffit d'ajouter ce document dans votre projet npm et de le require pour accéder à ses méthodes static ainsi qu'au classes qu'il propose.
+Son intérêt est de simplifier la création de commandes pour les bots discord en automatisant la récupération d'argument sous forme de tokens. D'installer le package dans votre projet npm et de le require pour accéder à ses méthodes ainsi qu'au classes qu'il propose.
 
 ## *Quickstart*
 
