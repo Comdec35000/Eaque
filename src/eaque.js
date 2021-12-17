@@ -4,21 +4,6 @@ const Lexer = require('./lexer.js');
 const Parser = require('./parser.js')
 
 class Eaque {
-
-    static tokenType = {
-      KEYWORD : "KEYWORD_TOKEN",
-      END : "END_TOKEN",
-      OPT_ARG_START : "OPT_ARG_START_TOKEN",
-      NUMBER : "NUMBER_TOKEN",
-      STRING : "STRING_TOKEN",
-      BOOL : "BOOL_TOKEN",
-      TIME : "TIME_TOKEN",
-      DATE : "DATE_TOKEN",
-      COLOR : "COLOR_TOKEN",
-      USER : "USER_TOKEN",
-      CHANNEL : "CHANNEL_TOKEN",
-      ROLE : "ROLE_TOKEN"
-    }
   
     static DIGITS = "0123456789";
   
