@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "git": "git add --all && git commit -m \"routine commit\" && git push origin main"
+    "git": "git add --all && git commit -m \"routine commit\" && git push origin main",
+    "test" : "cd ./test && nodemon index.js && cd .."
   },
   "repository": {
     "type": "git",
