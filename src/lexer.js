@@ -5,12 +5,11 @@ const { tokenType } = require('./class/token.js');
 
 class Lexer {
 
-  constructor(text, command, client, guild, instance) {
+  constructor(text, command, message) {
     this.text = text;
     this.command = command;
-    this.client = client;
-    this.guild = guild;
-    this.eaqueInstance = instance;
+    this.client = message.client;
+    this.guild = message.guild;
     this.pos = new Position(-1);
     this.currentChar;
     this.advance();
@@ -96,7 +95,7 @@ class Lexer {
 
     }
 
-    tokens.push(new Token(this.eaqueInstance.tokenType.END))
+    tokens.push(new Token(tokenType.END))
     return tokens;
   }
 
@@ -104,7 +103,7 @@ class Lexer {
     
     if (word.includes("#") && this.client.users.cache.find(u => u.tag == word)) {
 
-      tokens.push(new Token(this.eaqueInstance.tokenType.USER, this.client.users.cache.find(u => u.tag == word)));
+      tokens.push(new Token(tokenType.USER, this.client.users.cache.find(u => u.tag == word)));
       return;
 
     }
@@ -112,12 +111,12 @@ class Lexer {
     if(word.toLowerCase() === "true" || word.toLowerCase() === "false") {
 
       word = word.toLowerCase();
-      tokens.push(new Token(this.eaqueInstance.tokenType.BOOL, word === "true"));
+      tokens.push(new Token(tokenType.BOOL, word === "true"));
       return;
 
     }
 
-    if(tokens[tokens.length - 1] && tokens[tokens.length - 1].type === this.eaqueInstance.tokenType.STRING) {
+    if(tokens[tokens.length - 1] && tokens[tokens.length - 1].type === tokenType.STRING) {
 
       tokens[tokens.length - 1].value += ' ' + word
 
@@ -125,11 +124,11 @@ class Lexer {
 
       if(this.command.keywords.includes(word)) {
 
-        tokens.push(new Token(this.eaqueInstance.tokenType.KEYWORD, word));
+        tokens.push(new Token(tokenType.KEYWORD, word));
 
       } else {
 
-        tokens.push(new Token(this.eaqueInstance.tokenType.STRING, word));
+        tokens.push(new Token(tokenType.STRING, word));
 
       }
 
@@ -202,11 +201,11 @@ class Lexer {
         if(copyNum[2].length > 4) var year = copyNum[2] || new Date().getFullYear();
       }
 
-      if(day && month && year) return new Token(this.eaqueInstance.tokenType.DATE, new Date(year, month-1, day));
+      if(day && month && year) return new Token(tokenType.DATE, new Date(year, month-1, day));
 
     }
 
-    return new Token(this.eaqueInstance.tokenType.NUMBER, num.replace(/\//g, ''));
+    return new Token(tokenType.NUMBER, num.replace(/\//g, ''));
 
   }
 
