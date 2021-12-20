@@ -2,6 +2,8 @@
 
 <img src='https://github.com/Comdec35000/Eaque/blob/main/assets/logo_white.svg'>
 
+**OUTDATED**
+
 ## *Introduction :*
 
 Eaque is a free command parser made for discord commands.
