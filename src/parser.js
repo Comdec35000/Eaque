@@ -41,7 +41,7 @@ class Parser {
           var optArg = [];
           var key = this.tokens[index].value;
   
-          while(this.tokens[index + 1] && (this.tokens[index + 1].type !== tokenType.OPT_ARG_START || this.tokens[index + 1].type !== tokenType.END)) {
+          while(this.tokens[index + 1] && (this.tokens[index + 1].type !== tokenType.OPT_ARG_START && this.tokens[index + 1].type !== tokenType.END)) {
             index ++; 
             optArg.push(this.tokens[index]);
           }

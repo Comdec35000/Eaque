@@ -4,15 +4,6 @@ const Lexer = require('./lexer.js');
 const Parser = require('./parser.js')
 
 class Eaque {
-    
-    static TIMES = {
-      s : 1,
-      m : 60,
-      h : 3600,
-      d : 86400,
-      M : 2592000,
-      Y : 31536000
-    }
   
     /**
      * 
@@ -23,10 +14,11 @@ class Eaque {
      * @returns {CommandContext} All the info in the Command
      */
   
-    static readCommand(args, command, client, guild) {
+    static readCommand(args, command, message) {
 
       let lexer = new Lexer(args, command, message);
       var tokens = lexer.makeTokens();
+
       let parser = new Parser(tokens, command);
       var ctx = parser.parseTokens();
   

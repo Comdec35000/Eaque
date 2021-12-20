@@ -2,6 +2,7 @@ const Color = require('./class/color');
 const Position = require('./class/position');
 const Token = require('./class/token.js');
 const { tokenType } = require('./class/token.js');
+const { TIMES } = require('./class/utils');
 
 class Lexer {
 
@@ -31,6 +32,7 @@ class Lexer {
 
 
   makeTokens() {
+
     let tokens = [];
 
     while(this.currentChar) {
@@ -153,19 +155,19 @@ class Lexer {
   makeNumber() {
 
     let num = '';
-    let tokenType;
+    let tokType;
     let timeMultiplier;
 
-    while(('0123456789' + Object.keys(tokenType.TIMES) + './').includes(this.currentChar)) {
+    while(('0123456789' + Object.keys(TIMES) + './').includes(this.currentChar) && (this.currentChar != '')) {
+      
+      if(Object.keys(TIMES).includes(this.currentChar)) {
 
-      if(Object.keys(tokenType.TIMES).includes(this.currentChar)) {
-
-        tokenType = 'time';
-        timeMultiplier = tokenType.TIMES[this.currentChar];
+        tokType = 'time';
+        timeMultiplier = TIMES[this.currentChar];
 
       } else if(this.currentChar === '/') {
 
-        tokenType = 'date';
+        tokType = 'date';
         num += this.currentChar;
 
       } else {
@@ -178,6 +180,7 @@ class Lexer {
 
     }
 
+
     if(num.length > 15) {
       let tryUser = this.makeUser(num)
       if(tryUser) return new Token(tokenType.USER, tryUser);
@@ -189,8 +192,8 @@ class Lexer {
       if(tryRole) return new Token(tokenType.ROLE, tryRole);
     }
 
-    if(tokenType == 'time') return new Token(tokenType.TIME, num * timeMultiplier);
-    if(tokenType == 'date') {
+    if(tokType == 'time') return new Token(tokenType.TIME, num * timeMultiplier);
+    if(tokType == 'date') {
 
       var copyNum = '' + num;
       copyNum = copyNum.split('/');

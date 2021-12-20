@@ -5,3 +5,7 @@ You can suggest new additions [here](https://github.com/Comdec35000/Eaque/issues
 # Bug fix :
 
 # Features : 
+
+# Misc : 
+
+    + Adding a documentation

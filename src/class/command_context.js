@@ -28,7 +28,11 @@ class CommandContext {
     removeToken(pos) {
         let token = this.getToken(pos)
         if(token.type === tokenType.KEYWORD) this.keywords.slice(this.keywords.indexOf(token));
-        delete token;
+        this.tokens.slice(this.tokens.indexOf(token));
+    }
+
+    hasOptArg(name) {
+        return this.optArgs.get(name);
     }
 
 }
